@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Data Manager</string>
+    <string name="section_n1_student_list">Section N1 Student List</string>
+    <string name="enter_your_id">Enter Your ID</string>
+    <string name="enter_your_f_name">Enter Your F. Name</string>
+    <string name="enter_your_l_name">Enter Your L. Name</string>
+    <string name="search">Search</string>
+    <string name="delete_all">Delete All</string>
+</resources>
