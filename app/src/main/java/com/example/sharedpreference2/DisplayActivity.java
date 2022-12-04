@@ -7,6 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -16,8 +19,9 @@ import java.util.ArrayList;
 
 public class DisplayActivity extends AppCompatActivity {
 
-    Button btnBack;
-    TextView textView;
+    private Button btnBack;
+    private TextView textView;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,8 @@ public class DisplayActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.textView);
         btnBack = findViewById(R.id.btnBack);
+        listView = findViewById(R.id.listView);
+
 
         loadData();
 
@@ -45,12 +51,26 @@ public class DisplayActivity extends AppCompatActivity {
 
         Type type = new TypeToken<ArrayList<Student>>() {}.getType();
 
+        //
+        final ArrayList<String> students = new ArrayList<>();
+        String stud[] = null;
+        //
         MainActivity.studentsList = gson.fromJson(json, type);
         if (MainActivity.studentsList == null) {
             MainActivity.studentsList = new ArrayList<>();
             textView.setText("Empty");
         } else {
             for (int i = 0; i < MainActivity.studentsList.size(); i++) {
+                {
+                    stud = new String[MainActivity.studentsList.size()];
+                    stud[i] = (i + 1) + ". " + MainActivity.studentsList.get(i).ID + " " + MainActivity.studentsList.get(i).FirstName + " " + MainActivity.studentsList.get(i).LastName;
+                    students.add(stud[i]);
+
+                    ArrayAdapter<String> studentsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, students);
+                    listView.setAdapter(studentsAdapter);
+                }
+
+
                 textView.setText(textView.getText().toString() + "\n" + (i + 1) + ". " + MainActivity.studentsList.get(i).ID + " " + MainActivity.studentsList.get(i).FirstName + " " + MainActivity.studentsList.get(i).LastName + "\n");
             }
         }

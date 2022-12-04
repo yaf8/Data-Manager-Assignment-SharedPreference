@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         btnUpdate = findViewById(R.id.btnUpdate);
         btnSearch = findViewById(R.id.btnSearch);
         btnDisplay = findViewById(R.id.btnDisplay);
+        loadData();////////////////////\\\\\\\\\\\\\\\\\\\\\\\
 
         edtID = findViewById(R.id.EditTextID);
         edtFname = findViewById(R.id.EditTextFirstName);
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         blueToastMessage = blueToastLayout.findViewById(R.id.blueToastMessage);
         redToastMessage = redToastLayout.findViewById(R.id.redToastMessage);
-        loadData();
+
 
 
 
@@ -68,10 +69,8 @@ public class MainActivity extends AppCompatActivity {
         btnSave.setOnClickListener(v -> {
             String id = edtID.getText().toString(), fName = edtFname.getText().toString(), lName = edtLname.getText().toString();
             Save(id, fName, lName);
-            toast = new Toast(getApplicationContext());
-            toast.setDuration(Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.TOP, 0, 150);
 
+            Toast.makeText(this, "Save Passed", Toast.LENGTH_SHORT).show();
         });
 
         btnDelete.setOnClickListener(v -> {
@@ -130,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Student_List", MODE_PRIVATE);
-
         Gson gson = new Gson();
 
         String json = sharedPreferences.getString("StudentsList", null);
