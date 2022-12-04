@@ -12,24 +12,4 @@ public class Student {
     public String getID() {
         return ID;
     }
-
-    public String getFirstName() {
-        return FirstName;
-    }
-
-    public String getLastName() {
-        return LastName;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-
-    public void setFirstName(String firstName) {
-        FirstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        LastName = lastName;
-    }
 }

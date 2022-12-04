@@ -3,20 +3,12 @@ package com.example.sharedpreference2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,9 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-
-import java.util.ArrayList;
+import java.util.ArrayList;;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,11 +27,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView blueToastMessage, redToastMessage;
     private LayoutInflater liBlue, liRed;
     private View blueToastLayout, redToastLayout;
-    public ArrayList<Student> studentsList;
+    public static ArrayList<Student> studentsList;
     private Toast toast;
 
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -49,35 +38,40 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        InititalizeController();
-        loadData();
+        btnSave = findViewById(R.id.btnSave);
+        btnDelete = findViewById(R.id.btnDelete);
+        btnDeleteAll = findViewById(R.id.btnDeleteAll);
+        btnUpdate = findViewById(R.id.btnUpdate);
+        btnSearch = findViewById(R.id.btnSearch);
+        btnDisplay = findViewById(R.id.btnDisplay);
+
+        edtID = findViewById(R.id.EditTextID);
+        edtFname = findViewById(R.id.EditTextFirstName);
+        edtLname = findViewById(R.id.EditTextLastName);
 
 
         liBlue = getLayoutInflater();
         liRed = getLayoutInflater();
+
 
         blueToastLayout = liBlue.inflate(R.layout.blue_toast, findViewById(R.id.blue_toast_layout));
         redToastLayout = liRed.inflate(R.layout.red_toast,  findViewById(R.id.red_toast_layout));
 
         blueToastMessage = blueToastLayout.findViewById(R.id.blueToastMessage);
         redToastMessage = redToastLayout.findViewById(R.id.redToastMessage);
+        loadData();
 
 
-        toast = new Toast(getApplicationContext());
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.TOP, 0, 150);
-
-        ///////////////////////////////////////
-
-        sharedPreferences = getSharedPreferences("Student_List", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-
-        ///////////////////////////////////////
 
 
 
         btnSave.setOnClickListener(v -> {
-            Save();
+            String id = edtID.getText().toString(), fName = edtFname.getText().toString(), lName = edtLname.getText().toString();
+            Save(id, fName, lName);
+            toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.TOP, 0, 150);
+
         });
 
         btnDelete.setOnClickListener(v -> {
@@ -106,20 +100,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void InititalizeController() {
-        btnSave = findViewById(R.id.btnSave);
-        btnDelete = findViewById(R.id.btnDelete);
-        btnDeleteAll = findViewById(R.id.btnDeleteAll);
-        btnUpdate = findViewById(R.id.btnUpdate);
-        btnSearch = findViewById(R.id.btnSearch);
-        btnDisplay = findViewById(R.id.btnDisplay);
 
-        edtID = findViewById(R.id.EditTextID);
-        edtFname = findViewById(R.id.EditTextFirstName);
-        edtLname = findViewById(R.id.EditTextLastName);
 
     }
 
     private void Display() {
+        Intent i = new Intent(this, DisplayActivity.class);
+        startActivity(i);
     }
 
     private void Search() {
@@ -142,19 +129,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadData() {
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Student_List", MODE_PRIVATE);
+
+        Gson gson = new Gson();
+
+        String json = sharedPreferences.getString("StudentsList", null);
+        Type type = new TypeToken<ArrayList<Student>>(){}.getType();
+
+        studentsList = gson.fromJson(json, type);
+
+        if(studentsList == null)
+            studentsList = new ArrayList<>();
     }
 
-    private void Save() {
-        String id = edtID.getText().toString(), fName = edtFname.getText().toString(), lName = edtLname.getText().toString();
+    private void Save(String id, String fName, String lName) {
 
-        if(id.isEmpty() || fName.isEmpty() || lName.isEmpty())
-        {
-            blueToastMessage.setText("Enter Data!!!");
-            toast.setView(redToastLayout);
-            toast.show();
-        }else
-        {
-            studentsList.add(new Student(id, fName, lName));
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("Students_List", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
 
             Gson gson = new Gson();
             studentsList.add(new Student(id, fName, lName));
@@ -163,9 +154,6 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("StudentsList", json);
             editor.apply();
             loadData();
-        }
-
-
 
     }
 }
